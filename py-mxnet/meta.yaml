@@ -5,11 +5,8 @@ package:
 source:
   #git_url: https://github.com/apache/incubator-mxnet.git
   #git_rev: {{ mxnet_version }}
-  url: https://github.com/apache/incubator-mxnet/releases/download/{{ mxnet_version }}/apache-mxnet-src-{{ mxnet_version }}-incubating.tar.gz
-  sha256: 67a23738fc5e0b1d0fa5d67d079f85230fe26d53a6c2e46439441f62ce2a53b2
-  patches:
-    - 0001-Relax-constraints-on-requests-make-graphviz-optional.patch
-    - 0002-conda-unbundle-libmxnet-DSO.patch
+  git_url: https://github.com/apache/incubator-mxnet.git
+  git_tag: {{ mxnet_version }}
 
 build:
   skip: True  # [win and vc<14]
@@ -21,13 +18,13 @@ requirements:
   host:
     - libmxnet {{ mxnet_version }}
     - cython
-    - python
+    - python {{ python_version }}
     # Numpy's C API is not used
-    - numpy >=1.16.0,<=2.0.0
+    - numpy >=1.16.0,<2.0.0
     - requests >=2.20.0,<3
     - setuptools
   run:
-    - numpy >=1.16.0,<=2.0.0
+    - numpy >=1.16.0,<2.0.0
     - requests >=2.20.0,<3
     - python
     - libmxnet {{ mxnet_version }}
@@ -39,8 +36,8 @@ test:
 about:
   home: http://mxnet.io
   license: Apache-2
-  license_file: LICENSE
   license_family: Apache
+  license_file: LICENSE
   summary: MXNet is a deep learning framework designed for both efficiency and flexibility
   description: |
     Apache MXNet (incubating) is a deep learning framework designed for both
@@ -53,10 +50,9 @@ about:
     machines. MXNet is also more than a deep learning project. It is also a
     collection of blue prints and guidelines for building deep learning systems,
     and interesting insights of DL systems for hackers.
-  dev_url: https://github.com/apache/incubator-mxnet
   doc_url: https://mxnet.incubator.apache.org/
+  dev_url: https://github.com/apache/incubator-mxnet
 
 extra:
   recipe-maintainers:
-    - jjhelmus
-    - nehaljwani
+    - barry-jin

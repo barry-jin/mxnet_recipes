@@ -1,29 +1,23 @@
 mxnet_variant_str:
-  #  - gpu_openblas
-  #  - gpu_mkl
-  - openblas
-  - mkl
+  - cu102
+  - cpu
 mxnet_variant_version:
   #  - 0.0.10
   #  - 0.0.20
   - 0.0.30
   - 0.0.40
-mxnet_blas_impl:
-  #  - openblas
-  #  - mkl
-  - openblas
-  - mkl
 mxnet_version:
-  - 1.5.0
-#cudatoolkit_version:
-#  - 8.0
-#  - 9.0
-#
-#cudnn_version:
-#  - 7
+  - 1.8.0
+cudatoolkit_version:
+  - 10.2
+cudnn_version:
+  - 8.1
+python_version:
+  - 3.8
+nccl_version:
+  - 2.9
 libopencv:  # [win]
   - 3.4.1   # [win]
 zip_keys:
   - mxnet_variant_str
   - mxnet_variant_version
-  - mxnet_blas_impl

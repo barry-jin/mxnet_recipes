@@ -12,72 +12,29 @@ rm -rf include/mkldnn
 export OPENMP_OPT=ON
 #export JEMALLOC_OPT=ON
 
-if [[ ${HOST} =~ .*darwin.* ]]; then
+if [[ "$OSTYPE" == "darwin"* ]]; then
   export OPENMP_OPT=OFF
+  PLATFORM=darwin
   # On macOS, jemalloc defaults to JEMALLOC_PREFIX: 'je_'
   # for which mxnet source code isn't ready yet.
 #  export JEMALLOC_OPT=OFF
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  PLATFORM=linux
 fi
 
-declare -a _blas_opts
-if [[ "${mxnet_blas_impl}" == "mkl" ]]; then
-  _blas_opts+=(-DBLAS="mkl")
-  _blas_opts+=(-DUSE_BLAS="mkl")
-  _blas_opts+=(-DUSE_MKL_IF_AVAILABLE=ON)
-  _blas_opts+=(-DUSE_MKLDNN=ON)
-  _blas_opts+=(-DUSE_MKLML_MKL=ON)
-else
-  _blas_opts+=(-DBLAS="open")
-  _blas_opts+=(-DUSE_BLAS="Open")
-  _blas_opts+=(-DUSE_MKL_IF_AVAILABLE=OFF)
-  _blas_opts+=(-DUSE_MKLDNN=OFF)
-  _blas_opts+=(-DUSE_MKLML_MKL=OFF)
+cmake_config=config/distribution/${PLATFORM}_${mxnet_variant_str}.cmake
+if [[ ! -f $cmake_config ]]; then
+    >&2 echo "Couldn't find cmake config $make_config for the current settings."
+    exit 1
 fi
 
-declare -a _gpu_opts
-if [[ ${mxnet_variant_str} =~ .*gpu.* ]]; then
-  _gpu_opts+=(-DUSE_CUDA=ON)
-  _gpu_opts+=(-DUSE_CUDNN=ON)
-  _gpu_opts+=(-DUSE_CUDA_PATH=/usr/local/cuda-${cudatoolkit_version})
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64/stubs
-else
-  _gpu_opts+=(-DUSE_CUDA=OFF)
-  _gpu_opts+=(-DUSE_CUDNN=OFF)
-fi
+cp $make_config config.mk
 
 rm -rf build
 mkdir build
 cd build
-cmake -LAH \
-    -DCMAKE_BUILD_TYPE="Release" \
-    -DCMAKE_INSTALL_PREFIX=${PREFIX} \
-    -DCMAKE_INSTALL_LIBDIR="lib" \
-    -DCMAKE_AR=${AR} \
-    -DCMAKE_LINKER=${LD} \
-    -DCMAKE_NM=${NM} \
-    -DCMAKE_OBJCOPY=${OBJCOPY} \
-    -DCMAKE_OBJDUMP=${OBJDUMP} \
-    -DCMAKE_RANLIB=${RANLIB} \
-    -DCMAKE_STRIP=${STRIP} \
-    -DCMAKE_CXX_COMPILER_AR=${AR} \
-    -DCMAKE_CXX_COMPILER_RANLIB=${RANLIB} \
-    -DCMAKE_C_COMPILER_AR=${AR} \
-    -DCMAKE_C_COMPILER_RANLIB=${RANLIB} \
-    -DUSE_F16C=OFF \
-    -DUSE_OPENCV=ON \
-    "${_blas_opts[@]}" \
-    -DUSE_PROFILER=ON \
-    "${_gpu_opts[@]}" \
-    -DUSE_CPP_PACKAGE=ON \
-    -DUSE_SIGNAL_HANDLER=ON \
-    -DUSE_OPENMP="$OPENMP_OPT" \
-    -DUSE_JEMALLOC="$JEMALLOC_OPT" \
-    -DBUILD_CPP_EXAMPLES=OFF \
-    -DBUILD_TESTING=OFF \
-..
-
-make -j${CPU_COUNT} ${VERBOSE_CM}
-make install
+cmake -GNinja -C $cmake_config ..
+ninja
 
 # make install misses this file
 mkdir -p ${PREFIX}/bin
