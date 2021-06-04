@@ -6,8 +6,8 @@ set -ex
 rm -rf 3rdparty/openmp/
 
 # Use the MKL-DNN library already in the environment
-rm -rf 3rdparty/mkldnn
-rm -rf include/mkldnn
+# rm -rf 3rdparty/mkldnn
+# rm -rf include/mkldnn
 
 export OPENMP_OPT=ON
 #export JEMALLOC_OPT=ON
@@ -24,11 +24,11 @@ fi
 
 cmake_config=config/distribution/${PLATFORM}_${mxnet_variant_str}.cmake
 if [[ ! -f $cmake_config ]]; then
-    >&2 echo "Couldn't find cmake config $make_config for the current settings."
-    exit 1
+  >&2 echo "Couldn't find cmake config $cmake_config for the current settings."
+  exit 1
 fi
 
-cp $make_config config.mk
+cp $cmake_config config.mk
 
 rm -rf build
 mkdir build

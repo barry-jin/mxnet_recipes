@@ -1,15 +1,21 @@
 mxnet_variant_str:
   - cu102
-  - cpu
 mxnet_variant_version:
-  #  - 0.0.10
-  #  - 0.0.20
   - 0.0.30
-  - 0.0.40
 mxnet_version:
   - 1.8.0
+c_compiler:
+  - gcc
+cxx_compiler:
+  - gxx
+c_compiler_version:
+  - 7
+cxx_compiler_version:
+  - 7
 cudatoolkit_version:
   - 10.2
+cuda_compiler_version:
+  - 10.1
 cudnn_version:
   - 8.1
 python_version:
