@@ -30,7 +30,9 @@ if [[ ! -f $cmake_config ]]; then
   exit 1
 fi
 
-ln -s /usr/include/cublas_v2.h /usr/local/cuda-10.2/targets/x86_64-linux/include/cublas_v2.h
+if [[ ! -f /usr/local/cuda-10.2/targets/x86_64-linux/include/cublas_v2.h ]]; then
+  ln -s /usr/include/cublas_v2.h /usr/local/cuda-10.2/targets/x86_64-linux/include/cublas_v2.h
+fi
 
 declare -a _gpu_opts
 if [[ ${mxnet_variant_str} =~ .*cu.* ]]; then
@@ -51,24 +53,10 @@ mkdir build
 cd build
 cmake -GNinja "${_gpu_opts[@]}" ..
 ninja
-
-# make install misses this file
-mkdir -p ${PREFIX}/bin
-cp im2rec ${PREFIX}/bin/
+cd ..
 
 # remove static libs
-rm -f ${PREFIX}/build/libdmlc.a
-rm -f ${PREFIX}/build/libmxnet.a
-
-# remove cmake cruft
-rm -rf ${PREFIX}/build/cmake/dmlc
-
-export MXNET_LIBRARY_PATH=${PREFIX}/build/libmxnet.so
+rm -f build/libmxnet.a
 
 cd python
-${PYTHON} setup.py install --with-cython --single-version-externally-managed --record=record.txt
-
-# Delete the copied libmxnet.so and create a relative symlink to $PREFIX/lib/
-# The build scripts produce .so even on osx
-find ${PREFIX} | grep libmxnet.so | grep -v $PREFIX/lib/libmxnet.so | xargs rm -f
-ln -sf ../../../libmxnet.so $SP_DIR/mxnet/libmxnet.so
+python setup.py install --with-cython --single-version-externally-managed --record=record.txt

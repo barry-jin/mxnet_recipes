@@ -9,7 +9,6 @@ build:
 
 requirements:
   run:
-    - libmxnet {{ mxnet_version }}
     - py-mxnet {{ mxnet_version }}
 
 about:
