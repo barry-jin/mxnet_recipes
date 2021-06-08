@@ -1,6 +1,8 @@
 mxnet_variant_str:
+  - cpu
   - cu102
 mxnet_variant_version:
+  - 0.0.20
   - 0.0.30
 mxnet_version:
   - 1.8.0
@@ -15,7 +17,7 @@ cxx_compiler_version:
 cudatoolkit_version:
   - 10.2
 cuda_compiler_version:
-  - 10.1
+  - 10.2
 cudnn_version:
   - 8.1
 python_version:

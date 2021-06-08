@@ -1,3 +1,5 @@
+{% set build_number = "0" %}
+
 package:
   name: py-mxnet
   version: {{ mxnet_version }}
@@ -9,27 +11,57 @@ source:
   git_tag: {{ mxnet_version }}
 
 build:
-  skip: True  # [win and vc<14]
+  string: {{ mxnet_variant_str }}_py{{ python_version }}_{{ build_number }}
+  number: {{ build_number }}
+  skip: True              # [win and vc<14]
+  missing_dso_whitelist:  # [linux]
+    - libcuda.so.1        # [linux]
 
 requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - pkg-config  # [not win]
+    - make        # [not win]
+    - cmake
+    - ninja
+    - protobuf
+    - python {{ python_version }}
+    - llvm-openmp  # [osx]
+    - libgomp   # [linux]
   host:
-    - libmxnet {{ mxnet_version }}
+    - mkl-dnn
+    - mkl-devel
+    - llvm-openmp  # [osx]
+    - libgomp   # [linux]
+    - openblas-devel
+    - libopencv
     - cython
+    - cudatoolkit {{ cudatoolkit_version }}  # ['cu' in str(mxnet_variant_str)]
+    - cudnn {{ cudnn_version }}              # ['cu' in str(mxnet_variant_str)]
+    - nccl {{ nccl_version }}                # ['cu' in str(mxnet_variant_str)]
     - python {{ python_version }}
     # Numpy's C API is not used
     - numpy >=1.16.0,<2.0.0
     - requests >=2.20.0,<3
     - setuptools
   run:
+    - _mutex_mxnet {{ mxnet_variant_version }} {{ mxnet_variant_str }}
+    - cudatoolkit {{ cudatoolkit_version }}  # ['cu' in str(mxnet_variant_str)]
+    - cudnn {{ cudnn_version }}              # ['cu' in str(mxnet_variant_str)]
+    - nccl {{ nccl_version }}                # ['cu' in str(mxnet_variant_str)]
+    - libgcc-ng
+    - libgfortran
+    - {{ pin_compatible('mkl-dnn') }}
+    - {{ pin_compatible('llvm-openmp') }}    # [osx]
+    - {{ pin_compatible('libgomp') }}        # [linux]
     - numpy >=1.16.0,<2.0.0
     - requests >=2.20.0,<3
     - python
-    - libmxnet {{ mxnet_version }}
 
 test:
+  files:
+    - run_test.py
   imports:
     - mxnet
 
