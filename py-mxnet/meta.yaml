@@ -26,7 +26,7 @@ requirements:
     - cmake
     - ninja
     - protobuf
-    - python {{ python_version }}
+    - python
     - llvm-openmp  # [osx]
     - libgomp   # [linux]
   host:
@@ -40,7 +40,7 @@ requirements:
     - cudatoolkit {{ cudatoolkit_version }}  # ['cu' in str(mxnet_variant_str)]
     - cudnn {{ cudnn_version }}              # ['cu' in str(mxnet_variant_str)]
     - nccl {{ nccl_version }}                # ['cu' in str(mxnet_variant_str)]
-    - python {{ python_version }}
+    - python
     # Numpy's C API is not used
     - numpy >=1.16.0,<2.0.0
     - requests >=2.20.0,<3
