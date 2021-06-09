@@ -58,5 +58,4 @@ cd ..
 # remove static libs
 rm -f build/libmxnet.a
 
-cd python
-python setup.py install --with-cython --single-version-externally-managed --record=record.txt
+python -m pip install -e ./python --no-deps -vvv
