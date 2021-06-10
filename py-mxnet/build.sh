@@ -59,5 +59,5 @@ cd ..
 rm -f build/libmxnet.a
 
 cd python
-mv ../build/libmxnet.so .
 $PYTHON setup.py install --with-cython --single-version-externally-managed --record=record.txt
+mv ../build/libmxnet.so .
