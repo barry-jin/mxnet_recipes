@@ -37,7 +37,6 @@ requirements:
     - openblas-devel
     - libopencv
     - cython
-    - cudatoolkit-dev {{ cuda_compiler_version }}   # ['cu' in str(mxnet_variant_str)]
     - cudatoolkit {{ cudatoolkit_version }}  # ['cu' in str(mxnet_variant_str)]
     - cudnn {{ cudnn_version }}              # ['cu' in str(mxnet_variant_str)]
     - nccl {{ nccl_version }}                # ['cu' in str(mxnet_variant_str)]

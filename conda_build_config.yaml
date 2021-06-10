@@ -20,8 +20,6 @@ cxx_compiler_version:   # [osx]
   - 10                  # [osx]
 cudatoolkit_version:
   - 10.2
-cuda_compiler_version:
-  - 10.2
 cudnn_version:
   - 8.1
 nccl_version:

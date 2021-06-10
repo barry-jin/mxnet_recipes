@@ -53,6 +53,7 @@ mkdir build
 cd build
 cmake -GNinja "${_gpu_opts[@]}" ..
 ninja
+ninja install
 cd ..
 
 # remove static libs
