@@ -24,8 +24,6 @@ cuda_compiler_version:
   - 10.2
 cudnn_version:
   - 8.1
-python:
-  - 3.8
 nccl_version:
   - 2.9
 libopencv:  # [win]
